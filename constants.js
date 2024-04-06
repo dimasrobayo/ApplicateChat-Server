@@ -1,6 +1,6 @@
-export const DB_USER = "admin";
-export const DB_PASSWORD = "admin123456";
-export const DB_HOST = "chatapp.cqu2qfb.mongodb.net";
+export const DB_USER = "guanarenext-admin";
+export const DB_PASSWORD = "Dimas=2788*";
+export const DB_HOST = "chatapp.8zgiw.mongodb.net";
 
 export const IP_SERVER = "localhost";
 
