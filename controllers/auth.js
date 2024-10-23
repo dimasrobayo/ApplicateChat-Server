@@ -26,25 +26,35 @@ function register(req, res) {
 function login(req, res) {
   const { email, password } = req.body;
 
-  const emailLowerCase = email.toLowerCase();
+  // Validar que email y password no estén vacíos
+  if (!email || !password) {
+    return res.status(400).send({ msg: "Email y contraseña son obligatorios" });
+  }
+
+  const emailLowerCase = email.toLowerCase().trim();
 
   User.findOne({ email: emailLowerCase }, (error, userStorage) => {
     if (error) {
       res.status(500).send({ msg: "Error del servidor" });
-    } else {
-      bscrypt.compare(password, userStorage.password, (bcryptError, check) => {
-        if (bcryptError) {
-          res.status(500).send({ msg: "Error del servidor" });
-        } else if (!check) {
-          res.status(400).send({ msg: "Contraseña incorrecta" });
-        } else {
-          res.status(200).send({
-            access: jwt.createAccessToken(userStorage),
-            refresh: jwt.createRefreshToken(userStorage),
-          });
-        }
-      });
     }
+    
+    // Verificar si el usuario existe
+    if (!userStorage) {
+      return res.status(404).send({ msg: "Usuario no encontrado" });
+    }
+
+    bscrypt.compare(password, userStorage.password, (bcryptError, check) => {
+      if (bcryptError) {
+        res.status(500).send({ msg: "Error del servidor" });
+      } else if (!check) {
+        res.status(400).send({ msg: "Contraseña incorrecta" });
+      } else {
+        res.status(200).send({
+          access: jwt.createAccessToken(userStorage),
+          refresh: jwt.createRefreshToken(userStorage),
+        });
+      }
+    });
   });
 }
 
